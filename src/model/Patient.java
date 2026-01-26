@@ -19,7 +19,7 @@ public class Patient extends BaseEntity implements Validatable {
 
     @Override
     public void validate() {
-        if (name == null || name.isEmpty()) {
+        if (getName() == null || getName().isEmpty()) {
             throw new IllegalArgumentException("Patient name cannot be empty");
         }
         if (age <= 0) {
@@ -29,7 +29,7 @@ public class Patient extends BaseEntity implements Validatable {
 
     @Override
     public boolean isValid() {
-        return age > 0 && name != null && !name.isEmpty();
+        return age > 0 && getName() != null && !getName().isEmpty();
     }
 
     // Getters/Setters

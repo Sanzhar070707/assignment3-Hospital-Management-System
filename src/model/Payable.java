@@ -1,4 +1,5 @@
 package model;
 
-public class Payable {
+public interface Payable {
+    void pay(double amount);
 }

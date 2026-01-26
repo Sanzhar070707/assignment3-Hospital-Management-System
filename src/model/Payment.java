@@ -17,6 +17,7 @@ public class Payment extends BaseEntity implements Payable, Validatable {
         System.out.println("Payment: " + getName() + ", Amount: " + amount + ", Status: " + status);
     }
 
+    // Реализация абстрактного метода из BaseEntity
     @Override
     public void validate() {
         if (amount <= 0) {
@@ -27,11 +28,13 @@ public class Payment extends BaseEntity implements Payable, Validatable {
         }
     }
 
+    // Реализация метода из интерфейса Validatable
     @Override
     public boolean isValid() {
-        return amount > 0 && appointment != null;
+        return appointment != null && amount > 0;
     }
 
+    // Реализация метода из интерфейса Payable
     @Override
     public void pay(double amount) {
         this.amount = amount;
@@ -40,12 +43,27 @@ public class Payment extends BaseEntity implements Payable, Validatable {
     }
 
     // Getters/Setters
-    public Appointment getAppointment() { return appointment; }
-    public void setAppointment(Appointment appointment) { this.appointment = appointment; }
+    public Appointment getAppointment() {
+        return appointment;
+    }
 
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

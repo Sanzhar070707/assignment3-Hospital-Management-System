@@ -1,44 +1,60 @@
 package model;
 
-public class Patient extends BaseEntity implements Validatable {
-    private int age;
-    private String gender;
-    private String phoneNumber;
+import java.time.LocalDate;
 
-    public Patient(int id, String name, int age, String gender, String phoneNumber) {
-        super(id, name);
-        this.age = age;
-        this.gender = gender;
-        this.phoneNumber = phoneNumber;
+public class Patient extends BaseEntity implements Validatable {
+    private String lastName;
+    private LocalDate birthDate;
+    private String phone;
+
+    public Patient(int id, String firstName, String lastName, LocalDate birthDate, String phone) {
+        super(id, firstName); // BaseEntity хранит id и name (name = firstName)
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.phone = phone;
     }
 
     @Override
     public void printInfo() {
-        System.out.println("Patient: " + getName() + ", Age: " + age + ", Gender: " + gender);
+        System.out.println("ID: " + getId() + ", Patient: " + getFirstName() + " " + lastName +
+                ", BirthDate: " + birthDate + ", Phone: " + phone);
     }
 
     @Override
     public void validate() {
-        if (getName() == null || getName().isEmpty()) {
-            throw new IllegalArgumentException("Patient name cannot be empty");
+        if (getFirstName() == null || getFirstName().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be empty");
         }
-        if (age <= 0) {
-            throw new IllegalArgumentException("Age must be positive");
+        if (lastName == null || lastName.isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be empty");
+        }
+        if (birthDate == null) {
+            throw new IllegalArgumentException("Birth date cannot be null");
         }
     }
 
     @Override
     public boolean isValid() {
-        return age > 0 && getName() != null && !getName().isEmpty();
+        return getFirstName() != null && !getFirstName().isEmpty()
+                && lastName != null && !lastName.isEmpty()
+                && birthDate != null;
     }
 
     // Getters/Setters
-    public int getAge() { return age; }
-    public void setAge(int age) { this.age = age; }
+    public String getFirstName() {
+        return getName(); // имя хранится в BaseEntity
+    }
 
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getPhoneNumber() { return phoneNumber; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public int getId() {
+        return super.getId(); // получаем id из BaseEntity
+    }
 }

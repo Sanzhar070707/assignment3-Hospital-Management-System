@@ -112,3 +112,122 @@ javac -d out $(find . -name "*.java")
 - Debugging SQL schema and foreign key relationships.  
 - Handling exceptions consistently across different layers.  
 - Configuring JDBC connection and working with `PreparedStatement`.  
+
+# Assignment 4 – Hospital Management System (OOP + SOLID + Exceptions)
+
+## A. Project Overview
+**Purpose of API:**  
+This project extends the Hospital Management System from Assignment 3 by applying advanced OOP principles, SOLID design, exception handling, generics, interfaces, reflection, and utility classes.  
+It demonstrates how to build a robust, maintainable, and defense-ready architecture in Java with PostgreSQL.
+
+**Key Features:**
+- Abstract class hierarchy with polymorphism.
+- Interfaces with default and static methods (ISP).
+- Custom exception hierarchy for validation and database errors.
+- Repository layer with generics and JDBC.
+- Service layer with business logic, lambdas, and exception handling.
+- Utility layer with reflection and sorting.
+- Multi-layer architecture (Controller → Service → Repository → Database).
+
+---
+
+## B. OOP Design Documentation
+**Abstract class and subclasses:**
+- `BaseEntity` (id, name, timestamps, abstract methods `printInfo()`, `validate()`).
+- Subclasses: `Patient`, `Doctor`, `Appointment`, `Service`, `Payment`.
+
+**Interfaces and implemented methods:**
+- `Validatable`: `isValid()`, plus `default printValidationStatus()` and `static notNull(Object obj)`.
+- `Payable`: `pay(double amount)`, plus `default printReceipt()` and `static validateAmount()`.
+
+**Composition/Aggregation:**
+- `Appointment` aggregates `Patient`, `Doctor`, `Service`.
+- `Payment` aggregates `Appointment`.
+
+**Polymorphism examples:**
+- `printInfo()` overridden in each entity to display specific details.
+- Example: `Doctor.printInfo()` vs `Patient.printInfo()` produce different outputs.
+
+---
+
+## C. Exception Handling
+**Custom exceptions:**
+- `InvalidInputException` → thrown when validation fails.
+- `DuplicateResourceException` → thrown when duplicate entity detected.
+- `ResourceNotFoundException` → thrown when entity not found.
+- `DatabaseOperationException` → wraps SQL errors in repository layer.
+
+**Usage:**
+- Models validate input and throw `InvalidInputException`.
+- Services catch validation errors and check duplicates.
+- Repositories wrap SQL exceptions into `DatabaseOperationException`.
+
+---
+
+## D. Repository Layer
+**Generic CRUD interface:**  
+`CrudRepository<T>` with methods `create`, `getAll`, `getById`, `update`, `delete`.
+
+**Implementations:**
+- `PatientRepository` → works with `patients` table.
+- `DoctorRepository` → works with `doctors` table.
+- `AppointmentRepository` → works with `appointments` table.
+
+**Features:**
+- Uses JDBC with `PreparedStatement` and `try-with-resources`.
+- Wraps SQL errors in `DatabaseOperationException`.
+- Returns full entity objects (`Patient`, `Doctor`, `Appointment`).
+
+---
+
+## E. Service Layer
+**Examples:**
+- `PatientService` → validates patients, checks duplicates, throws exceptions.
+- `DoctorService` → validates doctors, checks duplicates, throws exceptions.
+
+**Features:**
+- Business logic separated from repository.
+- Uses lambdas (`stream().anyMatch(...)`) for duplicate checks.
+- Handles exceptions (`InvalidInputException`, `ResourceNotFoundException`, `DuplicateResourceException`).
+
+---
+
+## F. Utility Layer
+- `DatabaseConnection` → manages PostgreSQL connection.
+- `ReflectionUtils` → prints class info (fields, methods) using Reflection API.
+- `SortingUtils` → generic sorting with `Comparator` and lambdas.
+
+---
+
+## G. Controller & Main Demonstration
+`Main.java` demonstrates:
+- Creating and validating entities.
+- CRUD operations via services.
+- Exception handling at controller level.
+- Sorting entities with `SortingUtils` and lambdas.
+- Reflection with `ReflectionUtils.printClassInfo()`.
+
+---
+
+## H. Instructions to Compile and Run
+**Compile:**
+```bash
+javac -d out $(find . -name "*.java")
+```
+## I. Screenshots
+![img_8.png](img_8.png)
+![img_9.png](img_9.png)
+![img_10.png](img_10.png)
+## J. Reflection Section
+**What I learned:**
+- How to apply SOLID principles in practice.
+- How to design and use interfaces with default and static methods.
+- How to implement custom exception hierarchy for validation and database errors.
+- How to use generics in repository and utility layers.
+- How to apply Reflection API to inspect classes dynamically.
+- How to use lambdas and streams for duplicate checks and sorting.
+
+**Challenges faced:**
+- Ensuring exception hierarchy was applied consistently across layers.
+- Debugging JDBC queries and foreign key constraints.
+- Demonstrating reflection and sorting in a meaningful way for defense.

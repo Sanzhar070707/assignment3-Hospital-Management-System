@@ -2,13 +2,16 @@ package controller;
 
 import model.Patient;
 import model.Doctor;
+import model.BaseEntity;
 import service.PatientService;
 import service.DoctorService;
 import exception.InvalidInputException;
 import exception.ResourceNotFoundException;
+import utils.SortingUtils;
+import utils.ReflectionUtils;
 
 import java.time.LocalDate;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,6 +29,7 @@ public class Main {
             System.out.println("6. Show All Doctors");
             System.out.println("7. Update Doctor");
             System.out.println("8. Delete Doctor");
+            System.out.println("9. Demo: SOLID Principles");
             System.out.println("0. Exit");
             System.out.print("Choose option: ");
 
@@ -112,6 +116,7 @@ public class Main {
                         doctorService.deleteDoctor(id);
                         System.out.println("Doctor deleted successfully.");
                     }
+                    case 9 -> demoSolid(patientService, doctorService);
                     case 0 -> {
                         System.out.println("Exiting...");
                         return;
@@ -124,5 +129,27 @@ public class Main {
                 System.out.println("Unexpected error: " + e.getMessage());
             }
         }
+    }
+
+    private static void demoSolid(PatientService patientService, DoctorService doctorService) {
+        System.out.println("\n=== SOLID Demo ===");
+
+        List<BaseEntity> entities = new ArrayList<>();
+        entities.addAll(patientService.getAllPatients());
+        entities.addAll(doctorService.getAllDoctors());
+
+        System.out.println("→ Polymorphic printInfo:");
+        for (BaseEntity entity : entities) {
+            entity.printInfo();
+        }
+
+        System.out.println("\n→ Sorted by name:");
+        SortingUtils.sortList(entities, Comparator.comparing(BaseEntity::getName));
+        for (BaseEntity entity : entities) {
+            System.out.println(entity.getName());
+        }
+
+        System.out.println("\n→ Reflection on 9Patient.class:");
+        ReflectionUtils.printClassInfo(Patient.class);
     }
 }

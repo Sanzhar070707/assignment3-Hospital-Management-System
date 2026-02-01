@@ -2,14 +2,15 @@ package repository;
 
 import model.Patient;
 import utils.DatabaseConnection;
+import exception.DatabaseOperationException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PatientRepository {
+public class PatientRepository implements CrudRepository<Patient> {
 
-    // CREATE
+    @Override
     public void create(Patient patient) {
         String sql = "INSERT INTO patients (first_name, last_name, birth_date, phone) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -20,13 +21,12 @@ public class PatientRepository {
             stmt.setDate(3, Date.valueOf(patient.getBirthDate()));
             stmt.setString(4, patient.getPhone());
             stmt.executeUpdate();
-            System.out.println("Patient created successfully.");
         } catch (SQLException e) {
-            System.out.println("Error creating patient: " + e.getMessage());
+            throw new DatabaseOperationException("Error creating patient", e);
         }
     }
 
-    // READ ALL
+    @Override
     public List<Patient> getAll() {
         List<Patient> patients = new ArrayList<>();
         String sql = "SELECT * FROM patients";
@@ -45,12 +45,12 @@ public class PatientRepository {
                 patients.add(p);
             }
         } catch (SQLException e) {
-            System.out.println("Error fetching patients: " + e.getMessage());
+            throw new DatabaseOperationException("Error fetching patients", e);
         }
         return patients;
     }
 
-    // READ BY ID
+    @Override
     public Patient getById(int id) {
         String sql = "SELECT * FROM patients WHERE patient_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -68,12 +68,12 @@ public class PatientRepository {
                 );
             }
         } catch (SQLException e) {
-            System.out.println("Error fetching patient by ID: " + e.getMessage());
+            throw new DatabaseOperationException("Error fetching patient by ID", e);
         }
         return null;
     }
 
-    // UPDATE
+    @Override
     public void update(int id, Patient patient) {
         String sql = "UPDATE patients SET first_name = ?, last_name = ?, birth_date = ?, phone = ? WHERE patient_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -85,13 +85,12 @@ public class PatientRepository {
             stmt.setString(4, patient.getPhone());
             stmt.setInt(5, id);
             stmt.executeUpdate();
-            System.out.println("Patient updated successfully.");
         } catch (SQLException e) {
-            System.out.println("Error updating patient: " + e.getMessage());
+            throw new DatabaseOperationException("Error updating patient", e);
         }
     }
 
-    // DELETE
+    @Override
     public void delete(int id) {
         String sql = "DELETE FROM patients WHERE patient_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -99,9 +98,8 @@ public class PatientRepository {
 
             stmt.setInt(1, id);
             stmt.executeUpdate();
-            System.out.println("Patient deleted successfully.");
         } catch (SQLException e) {
-            System.out.println("Error deleting patient: " + e.getMessage());
+            throw new DatabaseOperationException("Error deleting patient", e);
         }
     }
 }
